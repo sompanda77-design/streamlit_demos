@@ -10,11 +10,19 @@ import OpenAI_API.p7_image_input
 import OpenAI_API.p8_structured_output
 
 def home_page_for_intro():
-    st.header("Welcome to the OpenAI Chat Tutorial")
+    st.header("Welcome to the OpenAI Chat API Tutorial")
 
-    st.markdown('''
+    cols = st.columns([2,1])
+    with cols[1]:
+        with st.container():
+            st.video("https://youtu.be/9TrHbXQHkSo")
+ 
+
+    with cols[0]:
+        st.markdown('''
     The OpenAI Chat API allows you to generate human-like text responses to given prompts.
     This tutorial will help you understand the various parameters that can be used to customize the OpenAI Chat API.
+
 
     ##### Chapters:                
     Select a chapter from the sidebar to learn more about each parameter:
@@ -45,7 +53,7 @@ def set_sidebar():
     # Function to set the API key in the session state
 
     st.session_state.OPENAI_API_KEY = st.sidebar.text_input("Enter OpenAI API Key", type="password")
-    st.session_state.MODEL_NAME = st.sidebar.selectbox("Select Chat Model", ["gpt-4o-mini", "gpt-4o",  "gpt-4o-2024-08-06"])
+    st.session_state.MODEL_NAME = st.sidebar.selectbox("Select Chat Model", ["gpt-4o-mini", "gpt-4o"])
     st.session_state.TUTORIAL = st.sidebar.selectbox("Select Tutorial", ["OpenAI Chat", "Embedding"])
 
     # Check if API key is already in session state
@@ -98,3 +106,19 @@ def set_sidebar():
     elif page == "Structured Output":
         OpenAI_API.p8_structured_output.display()      
 
+
+'''
+Voice Over:
+
+Hi!
+I'm Prem.
+Welcome to the OpenAI Chat API Tutorial.
+
+Here you will learn the basics of the OpenAI Chat API. 
+This tutorial is divided into various chapters. Each chapter is dedicated to a specific type of parameter.
+You can select a chapter from the sidebar to learn more about each parameter.
+
+You need to provide your own OpenAI API key to use the API. You can get your API key from the OpenAI website.
+What are you waiting for? Let's go ahead and explore!
+
+'''
