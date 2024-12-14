@@ -3,13 +3,19 @@ import json
 from openai import OpenAI
 
 def display():
-    st.header("OpenAI API - Introduction")
 
-    st.subheader("Model Name")
+    outer_calls = st.columns([3,1])
+    
+    with outer_calls[0]:
+        st.header("OpenAI API - Introduction")
 
-    st.markdown("The model name is the name of the model you want to use for the completion. You can find the list of available models in the OpenAI API documentation.")
-    st.info(f"In this tutorial, we will be using the {st.session_state.MODEL_NAME} model.")
-    st.subheader("Message Roles")
+        st.subheader("Model Name")
+        st.markdown("The model name is the name of the model you want to use for the completion. You can find the list of available models in the OpenAI API documentation.")
+        st.info(f"In this tutorial, we will be using the {st.session_state.MODEL_NAME} model.")
+        st.subheader("Message Roles")
+
+    with outer_calls[1]:
+        st.video("https://youtu.be/_b2wluNAexc?si=SmTp744Uh0wnZ6aw")
 
     col1, col2, col3 = st.columns(3)
 

@@ -10,19 +10,21 @@ import OpenAI_API.p7_image_input
 import OpenAI_API.p8_structured_output
 
 def home_page_for_intro():
-    st.header("Welcome to the OpenAI Chat API Tutorial")
 
-    cols = st.columns([2,1])
+    cols = st.columns([3,1])
     with cols[1]:
         with st.container():
             st.video("https://youtu.be/9TrHbXQHkSo")
  
 
     with cols[0]:
-        st.markdown('''
-    The OpenAI Chat API allows you to generate human-like text responses to given prompts.
-    This tutorial will help you understand the various parameters that can be used to customize the OpenAI Chat API.
+        st.header("Welcome to the OpenAI Chat API Tutorial")
+        st.write("""
+        The OpenAI Chat API allows you to generate human-like text responses to given prompts.
+        This tutorial will help you understand the various parameters that can be used to customize the OpenAI Chat API.
+        """)
 
+    st.markdown('''
 
     ##### Chapters:                
     Select a chapter from the sidebar to learn more about each parameter:
