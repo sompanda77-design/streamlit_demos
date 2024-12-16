@@ -5,6 +5,9 @@ from openai import OpenAI
 def display():
     OPENAI_API_KEY = st.session_state.OPENAI_API_KEY
     MODEL_NAME = st.session_state.MODEL_NAME
+
+    
+
     st.header("OpenAI API - Randomness Parameters")
     st.markdown("""
         <style>
@@ -35,8 +38,8 @@ def display():
     col1, col2 = st.columns(2) 
 
     with col1:
-        SYSTEM_MESSAGE = st.text_input("Enter the system message", help="Provide general context and instructions for the AI" ,value="You are a helpful assistant")
-        USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="What is the capital of France?")
+        SYSTEM_MESSAGE = st.text_input("Enter the system message", help="Provide general context and instructions for the AI" ,value="You are a famous poet")
+        USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="Tell me a poetic joke about robots")
 
         st.markdown('<hr>', unsafe_allow_html=True)
         INCLUDE_ONLY = st.radio("Include", ["temperature", "top_p"], help="Choose either temperature or top_p")
@@ -55,8 +58,16 @@ def display():
 
 
     st.markdown('<hr>', unsafe_allow_html=True)
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
     with  col1:
+
+        with st.container():
+            st.code(f"MODEL_NAME: {MODEL_NAME}\nMAX_TOKENS: {MAX_TOKENS}\nN: {N}")  
+            if INCLUDE_ONLY == "temperature":
+                st.code(f"TEMPERATURE: {TEMPARATURE_1} / {TEMPARATURE_2}")
+            else:
+                st.code(f"TOP_P: {TOP_P_1} / {TOP_P_2}")
+
 
         if INCLUDE_ONLY == "temperature":
             st.code(
@@ -92,36 +103,9 @@ def display():
             )
 
     with col2:
-        st.caption("Parameters:")
-
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write("MODEL_NAME:")
-            st.write("MAX_TOKENS:")
-            st.write("N:")
-            if INCLUDE_ONLY == "temperature":
-                st.write("TEMPERATURE:")
-            else:
-                st.write("TOP_P:")
-        with col2:
-            st.markdown(f'##### {MODEL_NAME}')
-            st.markdown(f'##### {MAX_TOKENS}')
-            st.markdown(f'##### {N}')
-            if INCLUDE_ONLY == "temperature":
-                st.markdown(f"##### {TEMPARATURE_1} / {TEMPARATURE_2}")
-            else:
-                st.markdown(f"##### {TOP_P_1} / {TOP_P_2}")
-        # st.write("MODEL_NAME:", MODEL_NAME)
-        # st.write("MAX_TOKENS:", MAX_TOKENS)
-        # st.write("N:", N)
-        # if INCLUDE_ONLY == "temperature":
-        #     st.write("TEMPERATURE:", TEMPARATURE_1, "or", TEMPARATURE_2)
-        # else:
-        #     st.write("TOP_P:", TOP_P_1, "or", TOP_P_2)   
-
-    with col3:
         st.caption("Messages")
         st.write(MESSAGES)
+
     st.markdown('<hr>', unsafe_allow_html=True)
     client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -145,44 +129,36 @@ def display():
                     n=N,
                     top_p=temp_or_top_p,
                 )
-            st.subheader("Response:")
-            response_dict = response.to_dict() 
-            response_json = json.dumps(response_dict, indent=2)
-            st.json(response_json)
-
-            st.subheader("AI message:")
+            if INCLUDE_ONLY == "temperature":
+                expander_text = f"Response with temperature {temp_or_top_p}"
+            else:
+                expander_text = f"Response with top_p {temp_or_top_p}"
+            
+            with st.expander(expander_text):
+                response_dict = response.to_dict() 
+                response_json = json.dumps(response_dict, indent=2)
+                st.json(response_json)
 
             finish_reasons = []
             for index, choice in enumerate(response.choices):
-                st.caption(f'Message on index {index} is :',)
                 with st.chat_message("assistant"):
                     st.write(choice.message.content)
                 finish_reasons.append(choice.finish_reason)
 
-
-            st.caption("Token Usage:")
-            st.write("Prompt Tokens:", response.usage.prompt_tokens)
-            st.write("Completion Tokens:", response.usage.completion_tokens)
-            st.write("Total Tokens:", response.usage.total_tokens)
-            st.write("Finish Reasons:", finish_reasons)
-            st.write("System Fingerprint:", response.system_fingerprint)
+            st.code(f"System Fingerprint: {response.system_fingerprint}" )
 
         col1, col2 = st.columns(2)
 
         with col1:
             if INCLUDE_ONLY == "temperature":
-                st.subheader(f"Response with temperature {TEMPARATURE_1} ")
                 get_response(TEMPARATURE_1)
             else:
-                st.subheader(f"Response with top_p {TOP_P_1}")
                 get_response(TOP_P_1)
 
         with col2:
             if INCLUDE_ONLY == "temperature":
-                st.subheader(f"Response with temperature  {TEMPARATURE_2} " )
                 get_response(TEMPARATURE_2)
             else:
-                st.subheader(f"Response with top_p {TOP_P_2}")
                 get_response(TOP_P_2)
 
 # Voice Narration of the Page

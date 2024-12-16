@@ -4,34 +4,37 @@ import json
 def display():
     OPENAI_API_KEY = st.session_state.OPENAI_API_KEY
     MODEL_NAME = st.session_state.MODEL_NAME
-    st.header("OpenAI API - Cost affecting Parameters")
-    st.markdown("""
-        <style>
-        .column {
-            height: 500px;
-            overflow-y: auto;
-        }
-        </style>
-        """, unsafe_allow_html=True)
+
+    outer_cols = st.columns([3,1])
+
+    with outer_cols[0]:    
+        st.header("OpenAI API - Cost affecting Parameters")
+        st.markdown("""
+            <style>
+            .column {
+                height: 500px;
+                overflow-y: auto;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown('''
+                        <h4 style="color:blue">max_tokens</h4>
+                        The maximum number of tokens to generate a response. The higher the value, the longer the response will be.
+                        ''', unsafe_allow_html=True)
+
+        with col2:
+            st.markdown('''
+                        <h4 style="color:blue">n</h4>
+                        The number of response choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep n as 1 to minimize costs.
+                        ''',  unsafe_allow_html=True)
+
+    with outer_cols[1]:
+        st.video("https://youtu.be/qx_8lK9Quzo")
 
     col1, col2 = st.columns(2)
-    with col1:
-        st.markdown('''
-                    <h4 style="color:blue">max_tokens</h4>
-                    The maximum number of tokens to generate a response. The higher the value, the longer the response will be.
-                    ''', unsafe_allow_html=True)
-
-    with col2:
-        st.markdown('''
-                    <h4 style="color:blue">n</h4>
-                    The number of response choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep n as 1 to minimize costs.
-                    ''',  unsafe_allow_html=True)
-
-
-
-    st.markdown('<hr>', unsafe_allow_html=True)
-    col1, col2 = st.columns(2) 
-
     with col1:
         SYSTEM_MESSAGE = st.text_input("Enter the system message", help="Provide general context and instructions for the AI" ,value="You are a funny friend")
         USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="Tell me a random joke")
@@ -82,80 +85,71 @@ def display():
         )
 
         st.subheader("Response:")
-        cols = st.columns(2)
-        with cols[0]:
-            response_dict = response.to_dict() 
-            response_json = json.dumps(response_dict, indent=2)
-            st.json(response_json)
 
-        with cols[1]:
-            with st.container(border=True):
-                choice_cols = st.columns(len(response.choices))
-                for index, choice in enumerate(response.choices):
-                    with choice_cols[index]:
-                        st.subheader(f"Choice {index + 1}")
-                        st.code(f"response.choices[{index}].message.content")
-                        with st.chat_message("assistant"):
-                            st.write(choice.message.content)                    
-                        st.caption(f"Finish Reason: {choice.finish_reason}")
+        response_dict = response.to_dict() 
+        response_json = json.dumps(response_dict, indent=2)
+        st.json(response_json)
+
+        with st.container(border=True):
+            choice_cols = st.columns(len(response.choices))
+            for index, choice in enumerate(response.choices):
+                with choice_cols[index]:
+                    st.subheader(f"Choice {index + 1}")
+                    st.code(f"response.choices[{index}].message.content")
+                    with st.chat_message("assistant"):
+                        st.write(choice.message.content)                    
+                    st.caption(f"Finish Reason: {choice.finish_reason}")
 
 
-            with st.container(border=True):
-                token_cols = st.columns(3)
-                with token_cols[0]:
-                    st.metric("Prompt Tokens", response.usage.prompt_tokens)
-                with token_cols[1]:
-                    st.metric("Completion Tokens", response.usage.completion_tokens)
-                with token_cols[2]:
-                    st.metric("Total Tokens", response.usage.total_tokens)
+        with st.container(border=True):
+            token_cols = st.columns(3)
+            with token_cols[0]:
+                st.caption("response.usage.prompt_tokens")
+                st.metric("Prompt Tokens", response.usage.prompt_tokens)
+            with token_cols[1]:
+                st.caption("response.usage.completion_tokens")
+                st.metric("Completion Tokens", response.usage.completion_tokens)
+            with token_cols[2]:
+                st.caption("response.usage.total_tokens")
+                st.metric("Total Tokens", response.usage.total_tokens)
 
 
-        # st.subheader("AI message:")
+# Voice Narration - another version
 
-        # finish_reasons = []
-        # for index, choice in enumerate(response.choices):
-        #     st.caption(f'Message on index {index} is :',)
-        #     with st.chat_message("assistant"):
-        #         st.write(choice.message.content)
-        #     finish_reasons.append(choice.finish_reason)
-
-
-        # st.caption("Token Usage:")
-        # st.write("Prompt Tokens:", response.usage.prompt_tokens)
-        # st.write("Completion Tokens:", response.usage.completion_tokens)
-        # st.write("Total Tokens:", response.usage.total_tokens)
-        # st.write("Finish Reasons:", finish_reasons)
-
-# Voice Narration of the Page
 '''
-Welcome Back! In this section, we will discuss some important but optional parameters that can be used to customize the response generated by the AI model.
+Hi There! Welcome back. We will see about 2 important parameters that affects the token usage and thereby affects the cost.
 
+Lets head on to our website and select the chapter 'Cost affecting Parameters' and plug in the API key.
 The first parameter is max_tokens. This parameter specifies the maximum number of tokens to generate a response. The higher the value, the longer the response will be. The more tokens you generate, the more it will cost you. So, keep that in mind.
 
 The second parameter is n. This parameter specifies the number of response choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep n as 1 to minimize costs. 
 
-Now, let's see how we can use these parameters in our code.
-In the code snippet provided, We are passing the model name, messages, max_tokens & n as parameters to the API.
+This time, lets ask our AI to tell us a joke.
+Now, lets try the 'n' parameter first. I am changing the value from 1 to 2.
 
-Let's provide some context and instructions for the AI by entering a system message. Then, ask a question or provide a prompt for the AI to respond to by entering a user message.
+In the code, you can see that max tokens and n are added. 
+Max tokens is set to 200 and n is set to 2. So, we should get 2 jokes!
 
-First, lets play around with the max_tokens. It is set to 200 here. Lets modify it to some lower value.
-All other parameters are set to default values.
-The messages object contains the system and user messages. 
+And, lets submit the request and see the response.
 
-Now, lets submit and see the output. 
+We can see that there are 2 choices now and there are 2 jokes!
+The token usage for completion tokens has doubled as well because it generated 2 responses. Hope you get the point.
+
+Now, lets try the max_tokens parameter. Let's go back to the top.
+Set the n to 1 and set the max_tokens to 100.
+This time lets ask it to provide a long story which will surely exceed 100 tokens.
+
+See the new values to be sent in the request.
+
+Lets submit the request and see the output.
+
 The response is generated but it stops at some point. This is because the AI has reached the maximum token limit.
+The finish reasons tell us why the AI stopped generating the response.
+In our last example, the finish reason was 'stop' but now it is 'length'. This is because the max_tokens is set to 100 and the story is longer than that.
+
 Taking a closer look at the token usage, we can see the number of tokens used for the completion same as the max_tokens we have set.
-
-Also, the finish reasons tell us why the AI stopped generating the response. It stopped because it reached the length, that is, max_tokens.
-
-Next we will see 'n' parameter. It is set to 1 by default. Lets change it to 2 and see the output.
-
-The AI generates two completions for the same input message. The token usage has doubled as well. It is useful when you want to generate multiple completions for the same input message. At the same time, it increases the cost.
-
-Also, note that, Both the messages are stopped abruptly because they reached the max_tokens limit.
 
 Try playing around with these parameters and see how they affect the response generated by the AI model.
 Good Luck!
+'''
 
-'''        

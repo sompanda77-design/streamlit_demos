@@ -4,9 +4,9 @@ from openai import OpenAI
 
 def display():
 
-    outer_calls = st.columns([3,1])
-    
-    with outer_calls[0]:
+    outer_cols = st.columns([3,1])
+
+    with outer_cols[0]:
         st.header("OpenAI API - Introduction")
 
         st.subheader("Model Name")
@@ -14,7 +14,7 @@ def display():
         st.info(f"In this tutorial, we will be using the {st.session_state.MODEL_NAME} model.")
         st.subheader("Message Roles")
 
-    with outer_calls[1]:
+    with outer_cols[1]:
         st.video("https://youtu.be/_b2wluNAexc?si=SmTp744Uh0wnZ6aw")
 
     col1, col2, col3 = st.columns(3)
