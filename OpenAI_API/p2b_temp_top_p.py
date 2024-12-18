@@ -38,8 +38,8 @@ def display():
     col1, col2 = st.columns(2) 
 
     with col1:
-        SYSTEM_MESSAGE = st.text_input("Enter the system message", help="Provide general context and instructions for the AI" ,value="You are a famous poet")
-        USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="Tell me a poetic joke about robots")
+        SYSTEM_MESSAGE = st.text_input("Enter the system message", help="Provide general context and instructions for the AI" ,value="You are a helpful assistant")
+        USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="Give me 5 names best suited for AI models")
 
         st.markdown('<hr>', unsafe_allow_html=True)
         INCLUDE_ONLY = st.radio("Include", ["temperature", "top_p"], help="Choose either temperature or top_p")
@@ -163,39 +163,54 @@ def display():
 
 # Voice Narration of the Page
 '''
-Hello!
-In this section, we will discuss the two parameters that affect the randomness of the AI's response.
-They are temperature and top_p.
-Temperature is a parameter that controls the randomness of the AI's response. 
-It is a value between 0 and 2. A higher value like 1.0 will make the output more random, while a lower value like 0.2 will make it more focused and deterministic. It is like the AI's creativity level.
+Hello there!
+Here, we will discuss the two key parameters that affect the randomness of the AI's response.
+
+Lets head on to our website and select the chapter 'Randomness affecting Parameters' and plug in the API key.
+So, what is randomness? Well, it is the variation in the AI's response. In other words, it is the difference in the AI's response when you submit the same prompt multiple times.
+
+The first parameter is temperature. It is a value between 0 and 2. 
+A higher value like 1 will make the output more random, while a lower value like 0.2 will make it more focused and deterministic. 
+In other words, our AI will be more creative with higher temperature and more deterministic with lower temperature.
 
 The second parameter is top_p. It is an alternative to sampling with temperature, using nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-It is a value between 0 and 1. A higher value like 1.0 will make the output more random, while a lower value like 0.1 will make it more focused and deterministic.
+It is a value between 0 and 1. A higher value like 1 will make the output more random, while a lower value like 0.1 will make it more focused and deterministic.
 
 OpenAI suggests using either temperature or top_p, but not both at the same time.
 
 Let's see how these parameters affect the AI's response.
 
-First, lets enter the system message and user message. The system message provides general context and instructions for the AI, while the user message asks a question or provides a prompt for the AI to respond to.
+First, lets enter the system message and user message. You know about these messages from the previous chapters. This time, lets ask the AI to give us 5 names best suited for AI models.
 
-Next, let us keep the max_tokens as 200. 
+Next, let us keep the max_tokens as 200 and n as 1. 
+
+You can see the sliders for temperature and top_p where you can set the values.
 
 This page allows us to try 2 different values for temperature and see responses for both side by side.
 
-First, let us try with temperature. We will set the temperature to the same value, say 0.2 in both the inputs and submit.
+We will set the temperature to the same value, say 0.2 in both the inputs.
 
-We can see that the 2 responses are little different but very close.
+See the code where the temperature parameter is added along with other already discussed parameters. The values passed on the parameters are here and see that the temperature parameter is set to 0.2 for both the inputs. Also, note the messages array.
 
-Now, let's set the temperature of the second input to 1.2 and see how the AI's response changes.
+Now, lets submit the request and wait for the response.
 
-This time the AI's response is more random and creative.
+We can see that the 2 responses are generated. But, aren't they very close?
 
+Now, let's set the temperature of the second input to 1.0 and see how the AI's response changes.
 
-Its time to try the top_p parameter. We will set the top_p to the same value, say 0.2 in both the inputs and submit.
+Can you see the difference? This time the AI's response is more random and creative. What do you think? 
+So, we understand that the higher the temperature, the more random and creative the AI's response is.
 
-The responses are similar but not the same. Its because the AI considers the results of the tokens with top_p probability mass.
+You can also see the response JSON here in this block. Just click to expand and you can see the response object.
 
-Now, let's set the top_p of the second input to 0.8 and see how the AI's response changes.
+Its time to try the top_p parameter. Lets go back up and select top_p and set it to the same value, say 0.2 in both the inputs.
+
+Values are updated in the code. See that instead of temperature, top_p is used. Lets submit!
+
+The same way as see have seen in the temperature , the responses are very similar but not the same. 
+Its because the AI considers the results of the tokens with top_p probability mass.
+
+Now, let's set the top_p of the second input to a higher value, say 1.2 and see how the AI's response changes.
 
 This time the AI's response is more random and creative. You can see it from the choice of words used in the second try.
 
