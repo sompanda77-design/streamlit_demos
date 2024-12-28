@@ -6,32 +6,36 @@ def display():
     OPENAI_API_KEY = st.session_state.OPENAI_API_KEY
     MODEL_NAME = st.session_state.MODEL_NAME
 
-    
+    outer_cols = st.columns([3,1])    
 
-    st.header("OpenAI API - Randomness Parameters")
-    st.markdown("""
-        <style>
-        .column {
-            height: 500px;
-            overflow-y: auto;
-        }
-        </style>
-        """, unsafe_allow_html=True)
+    with outer_cols[0]:
+        st.header("OpenAI API - Randomness Parameters")
+        st.markdown("""
+            <style>
+            .column {
+                height: 500px;
+                overflow-y: auto;
+            }
+            </style>
+            """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
 
 
-    with col1:
-        st.markdown('''
-                    <h4 style="color:blue">temperature</h4>
-            What sampling temperature to use. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
-        ''',  unsafe_allow_html=True)
+        with col1:
+            st.markdown('''
+                        <h4 style="color:blue">temperature</h4>
+                What sampling temperature to use. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+            ''',  unsafe_allow_html=True)
 
-    with col2:
-        st.markdown('''
-                    <h4 style="color:blue">top_p</h4>
-            An alternative to sampling with temperature, using nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-        ''',  unsafe_allow_html=True)
+        with col2:
+            st.markdown('''
+                        <h4 style="color:blue">top_p</h4>
+                An alternative to sampling with temperature, using nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+            ''',  unsafe_allow_html=True)
+
+    with outer_cols[1]:
+        st.video("https://youtu.be/zasTo1SAYIw")
 
 
     st.markdown('<hr>', unsafe_allow_html=True)

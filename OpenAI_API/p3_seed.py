@@ -4,17 +4,23 @@ import json
 def display():
     OPENAI_API_KEY = st.session_state.OPENAI_API_KEY
     MODEL_NAME = st.session_state.MODEL_NAME
-    st.header("OpenAI API - Seed parameter")
-    st.markdown('''
-                <h4 style="color:blue">seed</h4>
-                This feature is in Beta. If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result. Determinism is not guaranteed, and you should refer to the system_fingerprint response parameter to monitor changes in the backend.
-                ''',unsafe_allow_html=True)
+
+    outer_cols = st.columns([3,1])
+    with outer_cols[0]:
+        st.header("OpenAI API - Seed parameter")
+        st.markdown('''
+                    <h4 style="color:blue">seed</h4>
+                    This feature is in Beta. If specified, openai will make a best effort to sample deterministically, such that repeated requests with the same <span style="color:blue">seed</span> and parameters should return the same result. Determinism is not guaranteed, and you should refer to the <span style="color:blue">system_fingerprint</span> response parameter to monitor changes in the backend.
+                    ''',unsafe_allow_html=True)
+    with outer_cols[1]:
+        st.video("https://youtu.be/YrxMJvwA3XM")
+
     st.markdown('<hr>', unsafe_allow_html=True)
     col1, col2 = st.columns(2) 
 
     with col1:
         SYSTEM_MESSAGE = st.text_input("Enter the system message", help="Provide general context and instructions for the AI" ,value="You are a helpful assistant", )
-        USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="Give me 10 historical facts about India")
+        USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="Give me 10 Random names")
 
 
     with col2:
@@ -28,11 +34,14 @@ def display():
 
 
     st.markdown('<hr>', unsafe_allow_html=True)
-    col1, col2, col3 = st.columns(3)
+    col1, col2= st.columns(2)
     with  col1:
-        st.code(
-            '''
-                    from openai import OpenAI
+        
+        with st.container():
+            st.code(f"MODEL_NAME: {MODEL_NAME}\nMAX_TOKENS: {MAX_TOKENS}\nSEED: {SEED_1} / {SEED_2}")
+            st.code(
+                '''
+                        from openai import OpenAI
 
                 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -46,17 +55,7 @@ def display():
         )
 
     with col2:
-        st.caption("Parameters:")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write("MODEL_NAME:")
-            st.write("MAX_TOKENS:")
-        with col2:
-            st.markdown(f'##### {MODEL_NAME}')
-            st.markdown(f'##### {MAX_TOKENS}')
-            st.markdown(f'##### {SEED_1} / {SEED_2}')
 
-    with col3:
         st.caption("Messages")
         st.write(MESSAGES)
     st.markdown('<hr>', unsafe_allow_html=True)
@@ -70,17 +69,15 @@ def display():
 
         def get_response(seed):
 
-            response = client.chat.completions.create(
-                model=MODEL_NAME,
-                messages=MESSAGES,
-                max_tokens=MAX_TOKENS,
-                seed=seed
-            )
+            with st.spinner("Waiting for the response..."):
+                response = client.chat.completions.create(
+                    model=MODEL_NAME,
+                    messages=MESSAGES,
+                    max_tokens=MAX_TOKENS,
+                    seed=seed
+                )
 
-            st.subheader("Response:")
-            response_dict = response.to_dict() 
-            response_json = json.dumps(response_dict, indent=2)
-            st.json(response_json)
+            st.code(f"System Fingerprint: {response.system_fingerprint}")
 
             st.subheader("AI message:")
 
@@ -92,12 +89,10 @@ def display():
                 finish_reasons.append(choice.finish_reason)
 
 
-            st.caption("Token Usage:")
-            st.write("Prompt Tokens:", response.usage.prompt_tokens)
-            st.write("Completion Tokens:", response.usage.completion_tokens)
-            st.write("Total Tokens:", response.usage.total_tokens)
-            st.write("Finish Reasons:", finish_reasons)
-            st.write("System Fingerprint:", response.system_fingerprint)
+            st.subheader("Response:")
+            response_dict = response.to_dict() 
+            response_json = json.dumps(response_dict, indent=2)
+            st.json(response_json)
 
         col1, col2 = st.columns(2)
 
@@ -112,31 +107,47 @@ def display():
 # Voice Narration of the Page
 '''
 Hello!
-OpenAI API has a added a feature called seed. 
-This feature is in Beta. 
-If specified, the system will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result. Determinism is not guaranteed, and you should refer to the system_fingerprint response parameter to monitor changes in the backend.
-You can provide a random seed to use for the chat completion. If you set the seed, you will get the same result each time you run the code with the same seed value.
+
+For many of our use cases, we want to ensure that the response is deterministic. 
+OpenAI provides the deterministic response by using the seed parameter. 
+Lets headover to our website and click on the chapter 'consistancy parameter'.
+Remember to set the OPENAI_API_KEY and MODEL_NAME in the sidebar.
+Seed is a random number that we can pass along with the request.
+If specified, the system will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result.
+This is achieved by using the same backend for the same seed.
+To verify that the same backend is used, OpenAI API has added a response parameter called system_fingerprint.
+If the system_fingerprint is same for two requests, it means that the same backend was used to generate the response, and the response will likely be same.
+But, the determinism is not guaranteed, and the response may vary for the same seed.
 
 Let's see how it works.
 
-We will provide a system message and a user message.
-The system message is "You are a helpful assistant" and the user message is "Give me 5 science facts".
-We will make two requests with different seeds and see if the response is same or not.
+This time, we will ask the AI to give us 10 Random names.
 
-First, lets keep the seed as 25 and 25. This means we are providing the same seed for both the requests.
-This should return almost the same response for both the requests. 
-Note that the system fingerprint is same for both the requests. It means that OpenAI has ensured that the response is generated from the same backend which makes it's response consistent for the same seed.
+We will make two requests with same seed and see if the response is same or not.
+We expect that the system_fingerprint will be same for both the requests, and the response will be same. 
+Let's see if it is true.
+
+Note that the code now has the seed parameter along with the other regular parameters we have been using.
+The message array carries the system message and the user message.
+
+Lets submit the request and wait for the response.
+
+Okay, we got the response. First, let's check the system fingerprint.
+We can see that the system fingerprint is same for both the requests.
+This means that the same backend was used to generate the response, and the response will likely be same.
+
+Now, let's check the response. Its mostly same, but not exactly.
+This is because the response is not guaranteed to be same for the same seed.
+It is just a best effort to make the response deterministic for the same seed.
 
 Now, let's change one of the seed to say, 90000. This should return different responses as the seed is different.
 
-From the response, you can see that the response is different for different seeds.
-Also, the system fingerprint is different for different seeds, which means that the response is generated from different backend.
-
-Note that the response is not guaranteed to be same for different seeds. It is just a best effort to make the response deterministic for the same seed.
+This time, the system fingerprint is different, which means that the response is generated from different backend.
+The response is also different, as expected.
 
 That's all for the seed parameter.
-Hope you understood! Lets meet in the next feature.
-Until then, Good Bye!
+Lets meet in the next one.
+Good Bye!
 
 
 '''

@@ -68,7 +68,7 @@ def set_sidebar():
 
     if st.session_state.TUTORIAL == "OpenAI Chat":
 
-        page = st.sidebar.radio("Select Chapter", ["Home","Intro", "Cost affecting Parameters","Randomness Parameters", "Consistancy parameter",  "Penalty Parameters", "Stop Parameter", "Streaming", "Image Input", "Structured Output"])
+        page = st.sidebar.radio("Select Chapter", ["Home","Intro", "Cost affecting Parameters","Randomness Parameters", "Consistency parameter",  "Penalty Parameters", "Stop Parameter", "Streaming", "Image Input", "Structured Output"])
 
     elif st.session_state.TUTORIAL == "Embedding":
             
@@ -95,7 +95,7 @@ def set_sidebar():
         OpenAI_API.p2a_max_tokens_n.display()
     elif page == "Randomness Parameters":
         OpenAI_API.p2b_temp_top_p.display()    
-    elif page == "Consistancy parameter":
+    elif page == "Consistency parameter":
         OpenAI_API.p3_seed.display()
     elif page == "Streaming":
         OpenAI_API.p4_streaming.display()        
