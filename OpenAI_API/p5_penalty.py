@@ -4,29 +4,33 @@ from openai import OpenAI
 def display():
     OPENAI_API_KEY = st.session_state.OPENAI_API_KEY
     MODEL_NAME = st.session_state.MODEL_NAME
-    st.header("OpenAI API - Penalty Parameters")
-    col1, col2 = st.columns(2)
 
-    with col1:
-        st.markdown('''
-                    <h4 style="color:blue">presence_penalty</h4>
-                    Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
-                    <code>presence_penalty: true</code>
-                    ''', unsafe_allow_html=True)
+    outer_cols = st.columns([3,1])
+    with outer_cols[0]:
+        st.header("OpenAI API - Penalty Parameters")
+        col1, col2 = st.columns(2)
 
-    with col2:
-        st.markdown('''
-                    <h4 style="color:blue">frequency_penalty</h4>
-                    Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. 
-                    <code>frequency_penalty:true</code>
-                    ''', unsafe_allow_html=True)    
+        with col1:
+            st.markdown('''
+                        <h4 style="color:blue">presence_penalty</h4>
+                        Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
+                        ''', unsafe_allow_html=True)
+
+        with col2:
+            st.markdown('''
+                        <h4 style="color:blue">frequency_penalty</h4>
+                        Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. 
+                        ''', unsafe_allow_html=True)    
+
+    with outer_cols[1]:
+        st.video("https://youtu.be/GEIBhC5SHMk")
 
     st.markdown('<hr>', unsafe_allow_html=True)
     col1, col2, col3= st.columns(3) 
     
     with col1:
         SYSTEM_MESSAGE = st.text_input("Enter the system message", help="Provide general context and instructions for the AI" ,value="You are a helpful assistant")
-        USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="What is the capital of France?")
+        USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="Give a short description about robots")
 
 
     with col2:
@@ -43,8 +47,11 @@ def display():
 
 
     st.markdown('<hr>', unsafe_allow_html=True)
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns([3,2])
     with  col1:
+        st.code(
+            f"MODEL_NAME: {MODEL_NAME}\nMAX_TOKENS: {MAX_TOKENS}\nPRESENCE_PENALTY: {PRESENCE_PENALTY}\nFREQENCY_PENALTY: {FREQENCY_PENALTY}"
+        )
         st.code(
             '''
                     from openai import OpenAI
@@ -61,22 +68,8 @@ def display():
         '''
         )
 
+
     with col2:
-        st.caption("Parameters:")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write("MODEL_NAME:")
-            st.write("MAX_TOKENS:")
-            st.write("PRESENCE_PENALTY:")
-            st.write("FREQENCY_PENALTY:")
-        with col2:
-            st.markdown(f'##### {MODEL_NAME}')
-            st.markdown(f'##### {MAX_TOKENS}')
-            st.markdown(f'##### {PRESENCE_PENALTY}')
-            st.markdown(f'##### {FREQENCY_PENALTY}')            
-
-
-    with col3:
         st.caption("Messages")
         st.write(MESSAGES)
     st.markdown('<hr>', unsafe_allow_html=True)
@@ -137,9 +130,11 @@ def display():
 # Voice Narration of the Page
 '''
 Hello!
-Welcome to our tutorial on the penalty parameters.
+Today we will explore the penalty parameters in OpenAI API.
 
 Presence penalty and frequency penalty are two parameters that can be used to influence the AI's response.
+
+Let's head over to our website and select the chapter 'penalty parameters'.
 
 The presence penalty helps to reduce repetition in AI responses. When the AI generates text, it tends to favor words it has already used, leading to repetitive and sometimes monotonous outputs. The presence penalty steps in to counteract this tendency.
 
@@ -154,9 +149,10 @@ Lets experiment with different values for the presence penalty and frequency pen
 
 As usual, we will start by entering the system and user messages. Then we will set the max_tokens parameter to control the length of the AI response. Finally, we will adjust the presence penalty and frequency penalty sliders to see how they affect the AI's output.
 
-The AI will generate two responses: one without any penalty and one with the specified penalty values. We will compare the two responses to see how the penalty parameters influence the AI's output.
+This page is designed in such a way that the AI will generate two responses: one without any penalty and one with the specified penalty values. We will compare the two responses to see how the penalty parameters influence the AI's output.
 
-Here is an analysis of the AI response with and without penalty. The analysis highlights the differences between the two responses and explain how the penalty parameters affect the AI's output.
+
+This page also provides an analysis of the AI response with and without penalty. The analysis highlights the differences between the two responses and explain how the penalty parameters affect the AI's output.
 
 You can also experiment with different values for penalty to see how they impact the AI's response.
 

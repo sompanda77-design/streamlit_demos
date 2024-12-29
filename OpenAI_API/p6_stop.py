@@ -4,21 +4,26 @@ from openai import OpenAI
 def display():
     OPENAI_API_KEY = st.session_state.OPENAI_API_KEY
     MODEL_NAME = st.session_state.MODEL_NAME
-    st.header("OpenAI API - Stop Parameter")
-    
+    outer_cols = st.columns([3,1])
+    with outer_cols[0]:
+        st.header("OpenAI API - Stop Parameter")
+        st.markdown('''
+                        <h4 style="color:blue">stop</h4>
+                        Stop sequence is a string or list of strings. The API will stop generating further tokens when it encounters the stop sequence.
+                        Up to 4 sequences can be provided.\n
+                        A single string: <code>stop: "end"</code> \n
+                        Multiple strings: <code>stop: ["at", "today"]</code>
+                        ''', unsafe_allow_html=True)
 
-    st.markdown('''
-                    <h4 style="color:blue">stop</h4>
-                    Up to 4 sequences where the API will stop generating further tokens.\n
-                    A single string: <code>stop: "end"</code> \n
-                    Multiple strings: <code>stop: ["at", "today"]</code>
-                    ''', unsafe_allow_html=True)
+    with outer_cols[1]:
+        st.video("https://youtu.be/YrxMJvwA3XM")
+
     st.markdown('<hr>', unsafe_allow_html=True)
     col1, col2, col3= st.columns(3) 
     
     with col1:
         SYSTEM_MESSAGE = st.text_input("Enter the system message", help="Provide general context and instructions for the AI" ,value="You are a helpful assistant")
-        USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="What is the capital of France?")
+        USER_MESSAGE = st.text_input("Enter the user message", help="Ask a question or provide a prompt for the AI to respond to",value="Write a short story about a robot")
 
 
     with col2:
@@ -46,8 +51,9 @@ def display():
 
 
     st.markdown('<hr>', unsafe_allow_html=True)
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns([3,2])
     with  col1:
+        st.code(f"MODEL_NAME: {MODEL_NAME} \nMAX_TOKENS: {MAX_TOKENS} \nSTOP: {STOP}")
         st.code(
             '''
                     from openai import OpenAI
@@ -64,18 +70,6 @@ def display():
         )
 
     with col2:
-        st.caption("Parameters:")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write("MODEL_NAME:")
-            st.write("MAX_TOKENS:")
-            st.write("STOP:")
-        with col2:
-            st.markdown(f'##### {MODEL_NAME}')
-            st.markdown(f'##### {MAX_TOKENS}')
-            st.markdown(f'##### {STOP}')
-
-    with col3:
         st.caption("Messages")
         st.write(MESSAGES)
     st.markdown('<hr>', unsafe_allow_html=True)
@@ -83,8 +77,6 @@ def display():
 
         client = OpenAI(api_key=OPENAI_API_KEY)
 
-
-        st.subheader("AI Response:")
         response = client.chat.completions.create(
             model=MODEL_NAME,
             messages=MESSAGES,
@@ -94,29 +86,47 @@ def display():
 
         response_dict = response.to_dict() 
         response_json = json.dumps(response_dict, indent=2)
-        st.json(response_json)
         response_text = response.choices[0].message.content
-        with st.chat_message("assistant"):
+        col1, col2 = st.columns(2)
+        with col1:
             st.write(response_text)
+        with col2:
+            st.json(response_json)
 
 # Voice Narration of the Page
 '''
 Hi there!
 Welcome Back. In this section, we will discuss the stop parameter.
 
+Head over to our website and select the chapter 'Stop Parameter'.
+
 This parameter is essential for controlling when your AI-generated text should end.
-You can specify up to four stop sequences.It can be a single string or multiple strings.
 
 Here's how it works: When the AI generates text and encounters the stop sequence you’ve defined, it will immediately cease its output. This gives you precise control over the length and structure of the responses.
+You can specify up to four stop sequences.It can be a single string or multiple strings.
 
 Lets see this in action.
 
-Let's give the system and user messages, set the max tokens, and define the stop sequences.
-Let's say we want the AI to stop generating text when it encounters the symbol ".".
+We have our usual system and let's ask the AI to write a short story about a robot.
+The max tokens is set to 200 and lets leave it as it is.
 
-Click on the submit button to see the AI response.
+Now, we have to define the stop sequence. lets say we want the AI to stop generating text when it encounters the word "end".
 
-We see that the AI stops after the first line. Because it encountered the symbol ".". 
+Click on the submit button to see the AI response. We can also see the response object here.
+The story has stopped at some point. But it is not because of the stop sequence. It is because the max tokens is set to 200.
+We can see that the finish reason is "length". So in this case, the stop sequence word "end" was not generated in the response.
+
+Now, lets try a different stop sequence.
+This time, lets make it the symbol ".". Now, when the AI encounters the symbol ".", it will stop generating text.
+
+Click on the submit button to see the AI response. 
+The story has stopped at some point. This time it is because of the stop sequence. We can see that the finish reason is "stop".
+So in this case, the stop sequence "." was generated in the response.
+
+Let's try adding another stop sequence. We will add another symbol ",".
+
+Click on the submit button to see the AI response. 
+Now we see that the story has stopped even earlier. This is because the stop sequence "," was generated in the response.    
 
 You can experiment with different stop sequences to see how it affects the AI response.
 
