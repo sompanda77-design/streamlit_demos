@@ -16,7 +16,7 @@ def display():
                         ''', unsafe_allow_html=True)
 
     with outer_cols[1]:
-        st.video("https://youtu.be/YrxMJvwA3XM")
+        st.video("https://youtu.be/jGS_lSuusgY")
 
     st.markdown('<hr>', unsafe_allow_html=True)
     col1, col2, col3= st.columns(3) 
